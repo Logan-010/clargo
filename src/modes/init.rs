@@ -1,4 +1,4 @@
-use super::{Config, Errors, Res};
+use crate::{Config, Errors, Res};
 use colored::Colorize;
 use std::{
     fs::{create_dir, create_dir_all, OpenOptions},

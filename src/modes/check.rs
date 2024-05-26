@@ -1,6 +1,4 @@
-use crate::utils::{list_files, read_file};
-
-use super::{utils::incremental::update_hashes, Config, Res};
+use crate::{utils::{incremental::update_hashes, list_files, read_file}, Config, Res};
 use std::{fs::remove_file, path::Path, process::Command};
 
 pub fn check(config: &Config) -> Res<()> {

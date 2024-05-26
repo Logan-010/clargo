@@ -1,4 +1,4 @@
-use super::{utils::list_files, Res};
+use crate::{utils::list_files, Res};
 use std::{fs::remove_file, path::Path};
 
 pub fn clean() -> Res<()> {

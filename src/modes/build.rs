@@ -1,6 +1,5 @@
 use std::{path::Path, process::Command};
-
-use super::{utils::list_files, Config, Res};
+use crate::{utils::list_files, Config, Res};
 
 pub fn build(config: &Config) -> Res<()> {
     if config.release {

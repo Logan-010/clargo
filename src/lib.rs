@@ -1,8 +1,4 @@
-mod build;
-mod check;
-mod clean;
-mod help;
-mod init;
+mod modes;
 pub mod utils;
 
 use serde::Deserialize;
@@ -99,11 +95,11 @@ impl Settings {
     }
 
     pub fn help_menu(&self) {
-        help::help();
+        modes::help::help();
     }
 
     pub fn init(&self) -> Res<()> {
-        init::init(&self.args, &self.config)?;
+        modes::init::init(&self.args, &self.config)?;
 
         Ok(())
     }
@@ -115,7 +111,7 @@ impl Settings {
             self.config.release = true;
         }
 
-        check::check(&self.config)?;
+        modes::check::check(&self.config)?;
 
         Ok(())
     }
@@ -123,13 +119,13 @@ impl Settings {
     pub fn build(&mut self) -> Res<()> {
         self.check()?;
 
-        build::build(&self.config)?;
+        modes::build::build(&self.config)?;
 
         Ok(())
     }
 
     pub fn clean(&self) -> Res<()> {
-        clean::clean()?;
+        modes::clean::clean()?;
 
         Ok(())
     }
