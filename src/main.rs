@@ -12,6 +12,7 @@ fn main() -> Res<()> {
         Mode::Check => settings.check()?,
         Mode::Build => settings.build()?,
         Mode::Clean => settings.clean()?,
+        Mode::Run => settings.run()?,
     }
 
     Ok(())

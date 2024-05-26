@@ -26,6 +26,7 @@ pub enum Mode {
     Check,
     Build,
     Clean,
+    Run,
 }
 
 pub struct Settings {
@@ -41,6 +42,7 @@ pub struct Config {
     pub libs: Vec<String>,
     pub release: bool,
     pub incremental: bool,
+    pub cc: String,
 }
 
 impl Default for Config {
@@ -51,6 +53,7 @@ impl Default for Config {
             libs: Vec::new(),
             release: false,
             incremental: true,
+            cc: String::from("gcc"),
         }
     }
 }
@@ -77,9 +80,10 @@ impl Settings {
                         "check" => Mode::Check,
                         "build" => Mode::Build,
                         "clean" => Mode::Clean,
+                        "run" => Mode::Run,
                         _ => {
                             return Err(format!(
-                    "Incorrect subcommand {}, options are (help, init, check, build, clean)",
+                    "Incorrect subcommand \'{}\', options are (help, init, check, run, build, clean)",
                     args[1]
                 )
                             .into())
@@ -126,6 +130,14 @@ impl Settings {
 
     pub fn clean(&self) -> Res<()> {
         modes::clean::clean()?;
+
+        Ok(())
+    }
+
+    pub fn run(&mut self) -> Res<()> {
+        self.build()?;
+
+        modes::run::run(&self.config)?;
 
         Ok(())
     }

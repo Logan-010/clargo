@@ -1,4 +1,7 @@
-use crate::{utils::{incremental::update_hashes, list_files, read_file}, Config, Res};
+use crate::{
+    utils::{incremental::update_hashes, list_files, read_file},
+    Config, Res,
+};
 use std::{fs::remove_file, path::Path, process::Command};
 
 pub fn check(config: &Config) -> Res<()> {
@@ -18,7 +21,7 @@ pub fn check(config: &Config) -> Res<()> {
                 read_file(&Path::new("build/incremental").join(format!("{}.hash", filename)))?;
 
             if file_data != hash_data {
-                let mut command = Command::new("gcc");
+                let mut command = Command::new(&config.cc);
 
                 command.arg(file.to_str().unwrap());
 
@@ -58,7 +61,7 @@ pub fn check(config: &Config) -> Res<()> {
         }
     } else {
         for file in &files {
-            let mut command = Command::new("gcc");
+            let mut command = Command::new(&config.cc);
 
             command.arg(file.to_str().unwrap());
 

@@ -1,68 +1,55 @@
-use std::{path::Path, process::Command};
 use crate::{utils::list_files, Config, Res};
+use std::{path::Path, process::Command};
 
 pub fn build(config: &Config) -> Res<()> {
-    if config.release {
-        let mut command = Command::new("gcc");
-        for object in list_files(Path::new("build/release/object"))? {
-            command.arg(object.to_str().unwrap());
-        }
-
-        command.arg("-O3");
-
-        command.arg("-Iinclude");
-
-        #[cfg(target_os = "windows")]
-        command.arg(format!("-o build/release/{}.exe", config.name));
-
-        #[cfg(not(target_os = "windows"))]
-        command.arg(format!("-o build/release/{}", config.name));
-
-        for arg in &config.cflags {
-            command.arg(arg);
-        }
-
-        command.arg("-Llib");
-
-        for lib in &config.libs {
-            command.arg(format!("-l{}", lib));
-        }
-
-        println!(
-            "{}",
-            String::from_utf8(command.spawn()?.wait_with_output()?.stdout)?
-        );
+    let output_dir = if config.release {
+        Path::new("build/release")
     } else {
-        let mut command = Command::new("gcc");
-        for object in list_files(Path::new("build/debug/object"))? {
-            command.arg(object.to_str().unwrap());
-        }
-        
-        command.arg("-O0");
+        Path::new("build/debug")
+    };
 
-        command.arg("-Iinclude");
+    let mut command = Command::new(&config.cc);
 
-        #[cfg(target_os = "windows")]
-        command.arg(format!("-o build/debug/{}.exe", config.name));
+    let objects_path = if config.release {
+        Path::new("build/release/objects")
+    } else {
+        Path::new("build/debug/objects")
+    };
 
-        #[cfg(not(target_os = "windows"))]
-        command.arg(format!("-o build/debug/{}", config.name));
-
-        for arg in &config.cflags {
-            command.arg(arg);
-        }
-
-        command.arg("-Llib");
-
-        for lib in &config.libs {
-            command.arg(format!("-l{}", lib));
-        }
-
-        println!(
-            "{}",
-            String::from_utf8(command.spawn()?.wait_with_output()?.stdout)?
-        );
+    for object in list_files(objects_path)? {
+        command.arg(object.to_str().unwrap());
     }
+
+    if config.release {
+        command.arg("-O3");
+    } else {
+        command.arg("-O0");
+    }
+
+    command.arg("-Iinclude");
+
+    let output_file = if cfg!(target_os = "windows") {
+        format!("{}/{}.exe", output_dir.display(), config.name)
+    } else {
+        format!("{}/{}", output_dir.display(), config.name)
+    };
+
+    command.arg("-o");
+    command.arg(output_file);
+
+    for arg in &config.cflags {
+        command.arg(arg);
+    }
+
+    command.arg("-Llib");
+
+    for lib in &config.libs {
+        command.arg(format!("-l{}", lib));
+    }
+
+    let output = command.output()?;
+
+    println!("{}", String::from_utf8(output.stdout)?);
 
     Ok(())
 }

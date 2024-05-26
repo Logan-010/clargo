@@ -12,7 +12,7 @@ for just another C build system.
 
 Clargo.toml configuration is overwritten by args.
 
-Clargo is NOT A COMPILER! you MUST have gcc installed.
+Clargo is NOT A COMPILER! you MUST have a c compiler installed.
 
 {subcommands}:
 {help} -> show this menu
