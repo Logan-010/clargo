@@ -17,7 +17,7 @@ pub fn init(args: &[String], config: &Config) -> Res<()> {
         .open(name.join("Clargo.toml"))?
         .write_all(
             format!(
-                "name = \"{}\"\ncflags = {:?}\nlibs = {:?}\nrelease = {}\nincremental = {}\ncc = \"{}\"",
+                "name = \"{}\"\ncflags = {:?}\nlibs = {:?}\nrelease = {}\nincremental = {}\ncc = {:?}",
                 name.to_str().unwrap(),
                 config.cflags,
                 config.libs,

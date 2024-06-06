@@ -21,7 +21,11 @@ pub fn check(config: &Config) -> Res<()> {
                 read_file(&Path::new("build/incremental").join(format!("{}.hash", filename)))?;
 
             if file_data != hash_data {
-                let mut command = Command::new(&config.cc);
+                let mut command = Command::new(config.cc.first().expect("No CC in config file!"));
+
+                for cc_ext in &config.cc[1..] {
+                    command.arg(cc_ext);
+                }
 
                 command.arg(file.to_str().unwrap());
 
@@ -61,7 +65,11 @@ pub fn check(config: &Config) -> Res<()> {
         }
     } else {
         for file in &files {
-            let mut command = Command::new(&config.cc);
+            let mut command = Command::new(config.cc.first().expect("No CC in config file!"));
+
+            for cc_ext in &config.cc[1..] {
+                command.arg(cc_ext);
+            }
 
             command.arg(file.to_str().unwrap());
 

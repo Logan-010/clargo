@@ -42,7 +42,7 @@ pub struct Config {
     pub libs: Vec<String>,
     pub release: bool,
     pub incremental: bool,
-    pub cc: String,
+    pub cc: Vec<String>,
 }
 
 impl Default for Config {
@@ -53,7 +53,7 @@ impl Default for Config {
             libs: Vec::new(),
             release: false,
             incremental: true,
-            cc: String::from("gcc"),
+            cc: vec![String::from("gcc")],
         }
     }
 }

@@ -8,7 +8,11 @@ pub fn build(config: &Config) -> Res<()> {
         Path::new("build/debug")
     };
 
-    let mut command = Command::new(&config.cc);
+    let mut command = Command::new(config.cc.first().expect("No CC in config file!"));
+
+    for cc_ext in &config.cc[1..] {
+        command.arg(cc_ext);
+    }
 
     let objects_path = if config.release {
         Path::new("build/release/objects")
@@ -53,3 +57,4 @@ pub fn build(config: &Config) -> Res<()> {
 
     Ok(())
 }
+
